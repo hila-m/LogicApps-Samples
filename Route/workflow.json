@@ -1,0 +1,131 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "Compose": {
+                "type": "Compose",
+                "inputs": {
+                    "TrackingId": "@{variables('TrackingId')}",
+                    "Time": "@{utcNow()}",
+                    "InterfaceId": "HH-001",
+                    "Sender": "Hila"
+                },
+                "runAfter": {
+                    "Initialize_variable": [
+                        "SUCCEEDED"
+                    ]
+                },
+                "trackedProperties": {}
+            },
+            "Response": {
+                "type": "Response",
+                "kind": "Http",
+                "inputs": {
+                    "statusCode": 200,
+                    "body": "@outputs('Compose')"
+                },
+                "runAfter": {
+                    "Send_message-observabilityDemo": [
+                        "SUCCEEDED"
+                    ],
+                    "HTTP": [
+                        "SUCCEEDED",
+                        "TIMEDOUT",
+                        "FAILED"
+                    ]
+                }
+            },
+            "Initialize_variable": {
+                "type": "InitializeVariable",
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "TrackingId",
+                            "type": "string",
+                            "value": "@{triggerBody()}"
+                        }
+                    ]
+                },
+                "runAfter": {},
+                "trackedProperties": {}
+            },
+            "Send_message-observabilityDemo": {
+                "type": "ServiceProvider",
+                "inputs": {
+                    "parameters": {
+                        "entityName": "observability.demo.queue",
+                        "message": {
+                            "contentData": "@outputs('Compose')",
+                            "correlationId": "@variables('TrackingId')"
+                        }
+                    },
+                    "serviceProviderConfiguration": {
+                        "connectionName": "serviceBus",
+                        "operationId": "sendMessage",
+                        "serviceProviderId": "/serviceProviders/serviceBus"
+                    }
+                },
+                "runAfter": {
+                    "Compose": [
+                        "SUCCEEDED"
+                    ]
+                }
+            },
+            "HTTP": {
+                "type": "Http",
+                "inputs": {
+                    "uri": "https://failfastandretry.com/",
+                    "method": "GET"
+                },
+                "runAfter": {
+                    "Compose": [
+                        "SUCCEEDED"
+                    ]
+                },
+                "limit": {
+                    "timeout": "5"
+                },
+                "trackedProperties": {}
+            },
+            "Send_message-LockDemo": {
+                "type": "ServiceProvider",
+                "inputs": {
+                    "parameters": {
+                        "entityName": "lockduration.monitor.queue",
+                        "message": {
+                            "contentData": "@outputs('Compose')",
+                            "correlationId": "@variables('TrackingId')"
+                        }
+                    },
+                    "serviceProviderConfiguration": {
+                        "connectionName": "serviceBus",
+                        "operationId": "sendMessage",
+                        "serviceProviderId": "/serviceProviders/serviceBus"
+                    }
+                },
+                "runAfter": {
+                    "Compose": [
+                        "SUCCEEDED"
+                    ]
+                }
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "triggers": {
+            "When_a_HTTP_request_is_received": {
+                "type": "Request",
+                "kind": "Http",
+                "inputs": {
+                    "schema": {
+                        "id": "string"
+                    }
+                },
+                "correlation": {
+                    "clientTrackingId": "@{coalesce(triggerBody()?['id'], guid())}"
+                }
+            }
+        }
+    },
+    "kind": "Stateful"
+}

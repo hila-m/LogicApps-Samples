@@ -1,0 +1,97 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "For_each": {
+                "type": "foreach",
+                "foreach": "@triggerBody()",
+                "actions": {
+                    "Upload_blob_to_storage_container": {
+                        "type": "ServiceProvider",
+                        "inputs": {
+                            "parameters": {
+                                "containerName": "mycontainer",
+                                "blobName": "@item()?['correlationId']",
+                                "content": "@item()?['contentData']"
+                            },
+                            "serviceProviderConfiguration": {
+                                "connectionName": "AzureBlob",
+                                "operationId": "uploadBlob",
+                                "serviceProviderId": "/serviceProviders/AzureBlob"
+                            }
+                        },
+                        "trackedProperties": {}
+                    },
+                    "Complete_the_message_": {
+                        "type": "ServiceProvider",
+                        "inputs": {
+                            "parameters": {
+                                "messageId": "@triggerBody()?['body/undefined']"
+                            },
+                            "serviceProviderConfiguration": {
+                                "connectionName": "serviceBus",
+                                "operationId": "completeMessage",
+                                "serviceProviderId": "/serviceProviders/serviceBus"
+                            }
+                        },
+                        "runAfter": {
+                            "Upload_blob_to_storage_container": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "trackedProperties": {}
+                    },
+                    "Execute_non-query": {
+                        "type": "ServiceProvider",
+                        "inputs": {
+                            "parameters": {
+                                "statement": "select 4 from where (?, ?)",
+                                "sqlParameters": {
+                                    "f": "",
+                                    "a": ""
+                                }
+                            },
+                            "serviceProviderConfiguration": {
+                                "connectionName": "DB2",
+                                "operationId": "executeNonQuery",
+                                "serviceProviderId": "/serviceProviders/DB2"
+                            }
+                        },
+                        "runAfter": {
+                            "Complete_the_message_": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    }
+                },
+                "runAfter": {}
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "triggers": {
+            "When_messages_are_available_in_a_queue_(peek-lock)": {
+                "type": "ServiceProvider",
+                "inputs": {
+                    "parameters": {
+                        "queueName": "observability.demo.queue",
+                        "isSessionsEnabled": false
+                    },
+                    "serviceProviderConfiguration": {
+                        "connectionName": "serviceBus",
+                        "operationId": "peekLockQueueMessages",
+                        "serviceProviderId": "/serviceProviders/serviceBus"
+                    }
+                },
+                "trackedProperties": {},
+                "splitOn": "@triggerBody()",
+                "splitOnConfiguration": {
+                    "correlation": {
+                        "clientTrackingId": "@{coalesce(triggerBody()?['correlationId'], guid())}"
+                    }
+                }
+            }
+        }
+    },
+    "kind": "Stateful"
+}

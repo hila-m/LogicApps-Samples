@@ -1,0 +1,46 @@
+{
+  "managedApiConnections": {},
+  "serviceProviderConnections": {
+    "serviceBus": {
+      "parameterValues": {
+        "connectionString": "@appsetting('serviceBus_connectionString')"
+      },
+      "serviceProvider": {
+        "id": "/serviceProviders/serviceBus"
+      },
+      "displayName": "h-labs-sb"
+    },
+    "AzureBlob": {
+      "parameterValues": {
+        "blobStorageEndpoint": "@appsetting('AzureBlob_blobStorageEndpoint')",
+        "authProvider": {
+          "Type": "ManagedServiceIdentity"
+        }
+      },
+      "serviceProvider": {
+        "id": "/serviceProviders/AzureBlob"
+      },
+      "displayName": "h-labs-blob"
+    },
+    "request": {
+      "parameterValues": {},
+      "serviceProvider": {
+        "id": "connectionProviders/request"
+      },
+      "displayName": ""
+    },
+    "DB2": {
+      "parameterValues": {
+        "serverName": "@appsetting('DB2_serverName')",
+        "portNumber": "@appsetting('DB2_portNumber')",
+        "database": "@appsetting('DB2_database')",
+        "userName": "@appsetting('DB2_userName')",
+        "password": "@appsetting('DB2_password')"
+      },
+      "serviceProvider": {
+        "id": "/serviceProviders/DB2"
+      },
+      "displayName": "2"
+    }
+  }
+}
