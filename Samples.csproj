@@ -21,7 +21,12 @@
     <PackageReference Include="Microsoft.Azure.Workflows.WebJobs.Extension" Version="1.2.*"/>
   </ItemGroup>
   <ItemGroup>
-    <None Update="Receive\**\*.*">
+    <None Update="RenewLockDemo\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="ObservabilityDemo\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
