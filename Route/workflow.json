@@ -32,6 +32,9 @@
                         "SUCCEEDED",
                         "TIMEDOUT",
                         "FAILED"
+                    ],
+                    "Send_message-LockDemo": [
+                        "SUCCEEDED"
                     ]
                 }
             },

@@ -42,5 +42,31 @@
       },
       "displayName": "2"
     }
+  },
+  "functionConnections": {
+    "azureFunctionOperation": {
+      "function": {
+        "id": "/subscriptions/7c2d65a9-a683-4fe6-86ba-3dcfcfe78ec1/resourceGroups/h-labs/providers/Microsoft.Web/sites/h-labs-functions/functions/GetIP"
+      },
+      "triggerUrl": "https://h-labs-functions.azurewebsites.net/api/getip",
+      "authentication": {
+        "type": "QueryString",
+        "name": "Code",
+        "value": "@appsetting('azureFunctionOperation_functionAppKey')"
+      },
+      "displayName": "h-labs Functions"
+    },
+    "azureFunctionOperation-2": {
+      "function": {
+        "id": "/subscriptions/7c2d65a9-a683-4fe6-86ba-3dcfcfe78ec1/resourceGroups/h-labs/providers/Microsoft.Web/sites/h-labs-functions/functions/Sleep"
+      },
+      "triggerUrl": "https://h-labs-functions.azurewebsites.net/api/sleep",
+      "authentication": {
+        "type": "QueryString",
+        "name": "Code",
+        "value": "@appsetting('azureFunctionOperation_12_functionAppKey')"
+      },
+      "displayName": "h-labs-sleep"
+    }
   }
 }
