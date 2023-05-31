@@ -51,7 +51,10 @@
                 },
                 "runAfter": {
                     "When_a_HTTP_request_is_received": [
-                        "SUCCEEDED"
+                        "SUCCEEDED",
+                        "TIMEDOUT",
+                        "SKIPPED",
+                        "FAILED"
                     ]
                 },
                 "trackedProperties": {}
