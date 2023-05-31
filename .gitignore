@@ -17,6 +17,9 @@ __azurite_db_table_index__.json
 __blobstorage__
 __queuestorage__
 
+# Local proj
+Samples-DESKTOP-*.csproj
+
 
 # User-specific files
 *.suo

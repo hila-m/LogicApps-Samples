@@ -27,7 +27,8 @@
 			"args": [
 				"build",
 				"/property:GenerateFullPaths=true",
-				"/consoleloggerparameters:NoSummary"
+				"/consoleloggerparameters:NoSummary",
+				"${workspaceFolder}"
 			],
 			"type": "process",
 			"dependsOn": "clean",

@@ -49,7 +49,11 @@
                         }
                     ]
                 },
-                "runAfter": {},
+                "runAfter": {
+                    "When_a_HTTP_request_is_received": [
+                        "SUCCEEDED"
+                    ]
+                },
                 "trackedProperties": {}
             },
             "Send_message-observabilityDemo": {
